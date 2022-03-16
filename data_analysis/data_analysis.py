@@ -61,7 +61,7 @@ def main():
     for line in corpus:
         # remove ' ' from each line and read front five character
         line = line.replace(' ', '')
-        jaum_dict[line[0:5]] += 1
+        jaum_dict[line[:5]] += 1
         # line_count += 1 ## for debugging
     
     # Debugging
