@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
 import pickle
+import time
 
 # Read .txt file
 def read_txt(file_name):
@@ -40,6 +41,9 @@ def main():
     
     # list of jaum
     ja = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ']
+    
+    # list of not corpus word
+    not_corpus = [' ','"','\'', '.', ',', '!', '?', ':', ';', '-', '\n', '\t', '\r']
     
     # make a list of 5 character of jaum
     jaum_list = []

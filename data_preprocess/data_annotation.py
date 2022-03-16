@@ -77,11 +77,13 @@ def main():
     print("Start cleaning data...")
     t0 = time.time()
     t1 = time.time()
+    total_line = 0
 
     # make list for initial clean data (Erase not corpus word & non-hangul word)
     for iter,line in enumerate(corpus) :
 
         # print progress
+        total_line = iter
         if iter % 100000 == 0:
             print("{} lines cleaned".format(iter))
             t2 = time.time()
