@@ -53,17 +53,41 @@ def main():
     # make a dictionary of jaum_list : numder of jaum
     jaum_dict = {i : 0 for i in jaum_list}
     
-    # upload txt file
+    print("start counting...")
+    t0 = time.time()
+
+     # upload txt file
     corpus = read_txt(args.file)
+    t1 = time.time()
+    print("time for read the .txt file : {:.2f} (min)".format((t1-t0)/60))
     
     # read five character of each line and add count to dictionary
-    # line_count = 0 ## for debugging
+    iter = 1
+
     for line in corpus:
-        # remove ' ' from each line and read front five character
-        line = line.replace(' ', '')
-        jaum_dict[line[:5]] += 1
-        # line_count += 1 ## for debugging
+
+        if iter % 1000000 == 0 :
+            t2 = time.time()
+            print("{} line checked : {:.2f} seconds".format(iter, t2-t1))
+            t1 = t2
+
+        temp = ""
+        for word in line:
+            if word in not_corpus :
+                continue
+            if word not in ja :
+                break
+            
+            temp += word
+
+            if len(temp) == 5 :
+                jaum_dict[temp] += 1
+                break
+
+        iter += 1
     
+    t2 = time.time()
+    print("Finished... cost {:.2f} minutes".format((t2-t0)/60))
     # Debugging
     # count = 0
     # for i in jaum_dict.items():

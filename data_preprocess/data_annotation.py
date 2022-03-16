@@ -75,10 +75,19 @@ def main():
     init_corpus = [] ## tuple of (sentence, sentence length(only word))
     
     print("Start cleaning data...")
+    t0 = time.time()
     t1 = time.time()
 
     # make list for initial clean data (Erase not corpus word & non-hangul word)
-    for line in corpus :
+    for iter,line in enumerate(corpus) :
+
+        # print progress
+        if iter % 100000 == 0:
+            print("{} lines cleaned".format(iter))
+            t2 = time.time()
+            print("{} seconds".format(t2 - t1))
+            t1 = t2
+        
         temp = ""
         for word in line :
             if word not in not_corpus and hgtk.checker.is_hangul(word) or word == ' ':
@@ -100,14 +109,20 @@ def main():
 
     # print cleaning data time(min) and start annotating
     t2 = time.time()
-    print("Cleaning data time(min) :", (t2 - t1) / 60)
+    print("Cleaning data time(min) :", (t2 - t0) / 60)
     print("Start annotating data...")
-    
+    t0 = time.time()
+    t1 = time.time()
+
     # split the sentences by minimum word length 5 & annotate
     for iter, (line, total_num) in enumerate(init_corpus):
 
-        if iter % 10000000 == 0:
+        # print progress
+        if iter % 100000 == 0:
             print(iter, "sentences have been annotated")
+            t2 = time.time()
+            print("{} seconds".format(t2 - t1))
+            t1 = t2
 
         que = line.split(' ')
         que_size = len(que)
@@ -145,41 +160,11 @@ def main():
             que_length -= temp_len
             que_size -= temp_size
 
-
-            # temp = make_sentence(que[:3])
-            # _ , temp_len = sentence_length(temp)
-
-            
-
-        # # split the sentence by minimum word length 5
-        # temp = ""
-        # line_len = 0
-        # for word in line.split(' '):
-        #     if sentence_length(temp) < MIN_LEN :
-        #         temp += word + ' '
-        #         line_len += len(word)
-        #     else:
-        #         if (total_num - line_len) < MIN_LEN:
-        #             temp += word
-                
-        #             if total_num - line_len  - len(word) < MIN_LEN: continue
-
-        #             clean_corpus.append(temp)
-        #             annotated_corpus.append(decompose(temp))
-        #             temp = ""
-        #         else:
-        #             clean_corpus.append(temp)
-        #             annotated_corpus.append(decompose(temp))
-        #             temp = word + ' '
-        #             line_len += len(word)
-        
-        # if temp != '':
-        #     clean_corpus.append(temp)
-        #     annotated_corpus.append(decompose(temp))
     
     # print annotating data time(min)
-    t3 = time.time()
-    print("Annotating data time(min) :", (t3 - t2) / 60)
+    t2 = time.time()
+    print("Annotating data time(min) :", (t2 - t0) / 60)
+    print("Total lines :", iter)
 
     # Debugging
     # for i,word in enumerate(clean_corpus) :
