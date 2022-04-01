@@ -1,7 +1,8 @@
 import hgtk
 import argparse
 import time
-from pykospacing import Spacing # https://github.com/haven-jeon/PyKoSpacing
+# from pykospacing import Spacing # https://github.com/haven-jeon/PyKoSpacing
+from hanspell import spell_checker # https://github.com/ssut/py-hanspell
  
 # Read .txt file
 def read_txt(file_name):
@@ -116,7 +117,7 @@ def main():
     t1 = time.time()
 
     # Spacing object
-    spacing = Spacing()
+    # spacing = Spacing()
     
     # split the sentences by minimum word length 5 & annotate
     for iter, (line, total_num) in enumerate(init_corpus):
@@ -129,7 +130,9 @@ def main():
             t1 = t2
             
         # apply spacing
-        line = spacing(line)
+        # line = spacing(line)
+        res = spell_checker.check(line)
+        line = res.checked
         
         que = line.split(' ')
         que_size = len(que)
