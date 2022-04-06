@@ -1,7 +1,9 @@
 import hgtk
 import argparse
 import time
-
+# from pykospacing import Spacing # https://github.com/haven-jeon/PyKoSpacing
+from hanspell import spell_checker # https://github.com/ssut/py-hanspell
+ 
 # Read .txt file
 def read_txt(file_name):
     with open(file_name, 'r', encoding='utf-8') as f:
@@ -50,7 +52,7 @@ def sentence_length(line):
         return flag, 0
 
 # set global variable
-MIN_LEN = 5
+MIN_LEN = 7
 MAX_WORD = 10
 
 def main():
@@ -114,6 +116,9 @@ def main():
     t0 = time.time()
     t1 = time.time()
 
+    # Spacing object
+    # spacing = Spacing()
+    
     # split the sentences by minimum word length 5 & annotate
     for iter, (line, total_num) in enumerate(init_corpus):
 
@@ -123,7 +128,12 @@ def main():
             t2 = time.time()
             print("{} seconds".format(t2 - t1))
             t1 = t2
-
+            
+        # apply spacing
+        # line = spacing(line)
+        res = spell_checker.check(line)
+        line = res.checked
+        
         que = line.split(' ')
         que_size = len(que)
         que_length = total_num
@@ -131,7 +141,7 @@ def main():
         # Using que to cut sentences
         while que != []:
             
-            # 남은 어절의 개수가 2 보다 작거나, 남은 어절의 길이가 5보다 작을때 다 합침
+            # add all if que size is less than 2 or que length is less than MIN_LEN
             if len(que[2:]) < 2 or sentence_length(make_sentence(que[2:]))[1] < MIN_LEN :
                 temp = make_sentence(que)
                 clean_corpus.append(temp)
