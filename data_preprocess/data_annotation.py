@@ -128,6 +128,7 @@ def main():
         que_size = len(que)
         que_length = total_num
 
+        # Using que to cut sentences
         while que != []:
             
             # 남은 어절의 개수가 2 보다 작거나, 남은 어절의 길이가 5보다 작을때 다 합침
@@ -156,6 +157,7 @@ def main():
             temp = make_sentence(que[:temp_size])
             clean_corpus.append(temp)
             annotated_corpus.append(decompose(temp))
+            
             que = que[temp_size:]
             que_length -= temp_len
             que_size -= temp_size
