@@ -2,7 +2,10 @@ import hgtk
 import argparse
 import time
 from pykospacing import Spacing # https://github.com/haven-jeon/PyKoSpacing
-# from hanspell import spell_checker # https://github.com/ssut/py-hanspell
+import os
+
+
+from hanspell import spell_checker # https://github.com/ssut/py-hanspell
  
 # Read .txt file
 def read_txt(file_name):
@@ -76,6 +79,9 @@ def main():
     # make list for initial clean data (Erase not corpus word & non-hangul word)
     init_corpus = [] ## tuple of (sentence, sentence length(only word))
     
+    # Spacing object
+    spacing = Spacing()
+
     print("Start cleaning data...")
     t0 = time.time()
     t1 = time.time()
@@ -102,9 +108,14 @@ def main():
         check_word, length = sentence_length(temp)
 
         # if sentence length is over MAX_WORD and under MIN_LEN, delete sentence
-        if check_word and length >= MIN_LEN:
-            init_corpus.append((temp, length))
+        if check_word and length >= MIN_LEN:    
+            # init_corpus.append((spacing(temp), length))
+            init_corpus.append(temp)
     
+    # test for spacing
+    write_txt(PATH + file_name + '_init.txt', init_corpus)
+    print("Saved init corpus")
+
     # make list for results
     clean_corpus = []
     annotated_corpus = []
@@ -115,15 +126,11 @@ def main():
     print("Start annotating data...")
     t0 = time.time()
     t1 = time.time()
-
-    # Spacing object
-    spacing = Spacing()
     
     # split the sentences by minimum word length 5 & annotate
-    for iter, (line, total_num) in enumerate(init_corpus):
-
+    for iter, (line) in enumerate(init_corpus):
         # print progress
-        if iter % 1000000 == 0:
+        if iter % 100000 == 0:
             print(iter, "sentences have been annotated")
             t2 = time.time()
             print("{} seconds".format(t2 - t1))
@@ -132,49 +139,42 @@ def main():
         # apply spacing
 
         # pykospacing version
-        line = spacing(line)
+        # line = spacing(line)
 
         # hanspell version
-        # res = spell_checker.check(line)
-        # line = res.checked
+        res = spell_checker.check(line)
+        line = res.checked
         
         que = line.split(' ')
         que_size = len(que)
-        que_length = total_num
 
-        # Using que to cut sentences
-        while que != []:
-            
-            # add all if que size is less than 2 or que length is less than MIN_LEN
-            if len(que[2:]) < 2 or sentence_length(make_sentence(que[2:]))[1] < MIN_LEN :
-                temp = make_sentence(que)
+        
+        flag = False
+        st = 0
+        en = 2
+        while en < que_size :
+
+            if sentence_length(make_sentence(que[st:en]))[1] >= MIN_LEN :
+
+                if en == que_size -1 or sentence_length(make_sentence(que[en:]))[1] < MIN_LEN :
+                    temp = make_sentence(que[st:])
+                    que = []
+                    que_size = 0
+                    flag = True
+
+                else :
+                    temp = make_sentence(que[st:en])
+                    st = en
+                    en += 1
+                
                 clean_corpus.append(temp)
                 annotated_corpus.append(decompose(temp))
-                que = []
+
+            if flag : 
                 break
-            
-            temp_len = 0
-            temp_size = 0
 
-            for idx in range(2,que_size):
-                if sentence_length(make_sentence(que[:idx]))[1] >= MIN_LEN:
-                    temp_len = sentence_length(make_sentence(que[:idx]))[1]
-                    temp_size = idx
-                    break
+            en += 1
 
-                
-                if len(que[idx+1:]) < 2 or sentence_length(make_sentence(que[idx+1:]))[1] < MIN_LEN :
-                    temp_len = que_length
-                    temp_size = que_size
-                    break
-            
-            temp = make_sentence(que[:temp_size])
-            clean_corpus.append(temp)
-            annotated_corpus.append(decompose(temp))
-            
-            que = que[temp_size:]
-            que_length -= temp_len
-            que_size -= temp_size
 
     
     # print annotating data time(min)

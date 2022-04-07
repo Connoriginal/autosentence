@@ -1,0 +1,4 @@
+Start checking time for pykospacing
+47.63 seconds
+Start checking time for hanspell
+40.35 seconds

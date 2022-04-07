@@ -1,5 +1,4 @@
 #!/bin/sh
-conda activate autosentence
 cd ./data_preprocess
 echo "Start data preprocess"
 nohup python -u data_annotation.py -f kookmin.txt -p ./results/ 
