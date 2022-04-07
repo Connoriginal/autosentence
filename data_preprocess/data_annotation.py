@@ -2,9 +2,6 @@ import hgtk
 import argparse
 import time
 from pykospacing import Spacing # https://github.com/haven-jeon/PyKoSpacing
-import os
-
-
 from hanspell import spell_checker # https://github.com/ssut/py-hanspell
  
 # Read .txt file
@@ -139,11 +136,11 @@ def main():
         # apply spacing
 
         # pykospacing version
-        # line = spacing(line)
+        line = spacing(line)
 
         # hanspell version
-        res = spell_checker.check(line)
-        line = res.checked
+        # res = spell_checker.check(line)
+        # line = res.checked
         
         que = line.split(' ')
         que_size = len(que)
